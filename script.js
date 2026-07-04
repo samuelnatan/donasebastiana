@@ -88,7 +88,7 @@ function initOrderBump() {
     comBump: {
       aVista: 'R$ 36,90',
       parcelado: '3x de R$ 12,90',
-      url: 'https://ggcheckout.com/figado-leve?bump=sobremesas-glicose'
+      url: 'https://ggcheckout.app/checkout/v4/uNXL9rtvpTsMGsdgTmGx'
     }
   };
   
