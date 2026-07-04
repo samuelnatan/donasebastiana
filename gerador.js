@@ -215,24 +215,7 @@ const REST_FIGADO = `    <!-- BLOCO 3: TRANSIÇÃO -->
     <!-- BLOCO 8: CHECKOUT + CTA -->
     <section id="bloco-checkout" class="reveal">
 
-      <div class="order-bump-box">
-        <div class="order-bump-badge">Oportunidade única</div>
-        <div class="order-bump-header">
-          <div class="order-bump-checkbox-container">
-            <input type="checkbox" id="order-bump-checkbox" class="order-bump-checkbox">
-          </div>
-          <div>
-            <span class="order-bump-title">Sim, eu quero o Guia de Sobremesas que Não Sobem a Glicose por apenas R$ 9,90 extras!</span>
-          </div>
-        </div>
-        <p class="order-bump-desc">
-          Quer comer um docinho sem peso na consciência e sem estragar o tratamento? Adicione este guia com 12 sobremesas deliciosas e seguras, feitas com ingredientes simples. (Preço normal: R$ 29,90. Apenas R$ 9,90 nesta página.)
-        </p>
 
-        <div class="photo-frame" style="margin-top: 1rem; margin-bottom: 0;">
-          <img src="images/_mockup_sobremesas_glicose_.jpg" alt="Mockup do ebook Sobremesas que Não Sobem a Glicose em um celular, ao lado de um mousse de chocolate com morango." loading="lazy">
-        </div>
-      </div>
 
       <div class="price-box">
         <div class="price-original">De R$ 197,00 por apenas:</div>
@@ -449,24 +432,7 @@ const REST_GLICOSE = `    <!-- BLOCO 3: TRANSIÇÃO -->
     <!-- BLOCO 8: CHECKOUT + CTA -->
     <section id="bloco-checkout" class="reveal">
 
-      <div class="order-bump-box">
-        <div class="order-bump-badge">Oportunidade única</div>
-        <div class="order-bump-header">
-          <div class="order-bump-checkbox-container">
-            <input type="checkbox" id="order-bump-checkbox" class="order-bump-checkbox">
-          </div>
-          <div>
-            <span class="order-bump-title">Sim, eu quero o Guia de Sobremesas que Não Sobem a Glicose por apenas R$ 9,90 extras!</span>
-          </div>
-        </div>
-        <p class="order-bump-desc">
-          Quer comer um docinho saboroso sem provocar picos de glicose e sem aquela culpa depois do almoço? Adicione este guia com 12 receitas de sobremesas seguras e fáceis de fazer. (Preço normal: R$ 29,90. Apenas R$ 9,90 nesta página.)
-        </p>
 
-        <div class="photo-frame" style="margin-top: 1rem; margin-bottom: 0;">
-          <img src="images/_mockup_sobremesas_glicose_.jpg" alt="Mockup do ebook Sobremesas que Não Sobem a Glicose em um celular, ao lado de um mousse de chocolate com morango." loading="lazy">
-        </div>
-      </div>
 
       <div class="price-box">
         <div class="price-original">De R$ 197,00 por apenas:</div>
@@ -681,24 +647,7 @@ const REST_PELE = `    <!-- BLOCO 3: TRANSIÇÃO -->
     <!-- BLOCO 8: CHECKOUT + CTA -->
     <section id="bloco-checkout" class="reveal">
 
-      <div class="order-bump-box">
-        <div class="order-bump-badge">Oportunidade única</div>
-        <div class="order-bump-header">
-          <div class="order-bump-checkbox-container">
-            <input type="checkbox" id="order-bump-checkbox" class="order-bump-checkbox">
-          </div>
-          <div>
-            <span class="order-bump-title">Sim, eu quero o Guia de Sobremesas que Não Sobem a Glicose por apenas R$ 9,90 extras!</span>
-          </div>
-        </div>
-        <p class="order-bump-desc">
-          Quer comer um docinho delicioso sem que a insulina dispare e crie manchas na pele? Adicione este guia com 12 receitas de sobremesas seguras para o dia a dia. (Preço normal: R$ 29,90. Apenas R$ 9,90 nesta página.)
-        </p>
 
-        <div class="photo-frame" style="margin-top: 1rem; margin-bottom: 0;">
-          <img src="images/_mockup_sobremesas_glicose_.jpg" alt="Mockup do ebook Sobremesas que Não Sobem a Glicose em um celular, ao lado de um mousse de chocolate com morango." loading="lazy">
-        </div>
-      </div>
 
       <div class="price-box">
         <div class="price-original">De R$ 197,00 por apenas:</div>
