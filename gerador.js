@@ -219,8 +219,8 @@ const REST_FIGADO = `    <!-- BLOCO 3: TRANSIÇÃO -->
 
       <div class="price-box">
         <div class="price-original">De R$ 197,00 por apenas:</div>
-        <div class="price-installments" id="price-installments-value">3x de R$ 9,45</div>
-        <div class="price-cash">ou <span id="price-cash-value">R$ 27,00</span> à vista no Pix ou Cartão</div>
+        <div class="price-installments" id="price-installments-value">R$ 27,00</div>
+        <div class="price-cash">Pagamento único no PIX ou Cartão</div>
       </div>
 
       <div class="cta-container">
@@ -436,8 +436,8 @@ const REST_GLICOSE = `    <!-- BLOCO 3: TRANSIÇÃO -->
 
       <div class="price-box">
         <div class="price-original">De R$ 197,00 por apenas:</div>
-        <div class="price-installments" id="price-installments-value">3x de R$ 9,45</div>
-        <div class="price-cash">ou <span id="price-cash-value">R$ 27,00</span> à vista no Pix ou Cartão</div>
+        <div class="price-installments" id="price-installments-value">R$ 27,00</div>
+        <div class="price-cash">Pagamento único no PIX ou Cartão</div>
       </div>
 
       <div class="cta-container">
@@ -651,8 +651,8 @@ const REST_PELE = `    <!-- BLOCO 3: TRANSIÇÃO -->
 
       <div class="price-box">
         <div class="price-original">De R$ 197,00 por apenas:</div>
-        <div class="price-installments" id="price-installments-value">3x de R$ 9,45</div>
-        <div class="price-cash">ou <span id="price-cash-value">R$ 27,00</span> à vista no Pix ou Cartão</div>
+        <div class="price-installments" id="price-installments-value">R$ 27,00</div>
+        <div class="price-cash">Pagamento único no PIX ou Cartão</div>
       </div>
 
       <div class="cta-container">
@@ -687,7 +687,7 @@ const ANGLES = {
   figado: {
     label: 'Fígado',
     ctaType: 'figado',
-    ctaHref: 'https://ggcheckout.com/figado-leve',
+    ctaHref: 'https://ggcheckout.app/checkout/v4/C8QVen7EZMcdDITyPhR7',
     ctaTexto: 'Quero desinchar meu fígado agora',
     rest: REST_FIGADO,
     kicker: '🌿 O Método da Dona Sebastiana',
@@ -704,7 +704,7 @@ const ANGLES = {
   glicose: {
     label: 'Glicose',
     ctaType: 'glicose',
-    ctaHref: 'https://ggcheckout.com/figado-leve',
+    ctaHref: 'https://ggcheckout.app/checkout/v4/C8QVen7EZMcdDITyPhR7',
     ctaTexto: 'Quero controlar minha glicose agora',
     rest: REST_GLICOSE,
     kicker: '🌿 O Método da Dona Sebastiana',
@@ -721,7 +721,7 @@ const ANGLES = {
   insulina: {
     label: 'Insulina / Pele',
     ctaType: 'insulina',
-    ctaHref: 'https://ggcheckout.com/figado-leve',
+    ctaHref: 'https://ggcheckout.app/checkout/v4/C8QVen7EZMcdDITyPhR7',
     ctaTexto: 'Quero acabar com a insulina alta',
     rest: REST_PELE,
     kicker: '🌿 O Método da Dona Sebastiana',
