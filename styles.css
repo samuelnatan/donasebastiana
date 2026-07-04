@@ -1,0 +1,690 @@
+/* ==========================================================================
+   DESIGN SYSTEM - PÁGINAS DE VENDAS 60+ (MÉTODO FÍGADO LEVE)
+   Inspirado na cozinha da roça: azulejo português, chita floral, barro e
+   cobre. Base clara (cream), acentos com significado (azul = confiança/
+   cozinha, terracota = urgência/barro, oliva = "siga em frente"/salada).
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Outfit:wght@100..900&family=Caveat:wght@500..700&display=swap');
+
+:root {
+  /* Superfícies */
+  --cream: #FBF6EC;          /* papel/reboco claro — base da página */
+  --cream-deep: #F3EAD8;     /* creme mais denso para cartões e faixas */
+  --paper-line: #E4D7BC;     /* linha sutil de caderno / borda quente */
+  --white: #FFFFFF;
+
+  /* Estrutura e confiança (azulejo de cozinha) */
+  --azulejo: #23425C;
+  --azulejo-hover: #1A3247;
+  --azulejo-soft: #E7EEF1;   /* tinta de azulejo bem clara, para seções */
+
+  /* Urgência e calor (barro, chita) */
+  --terracota: #BD5B2C;
+  --terracota-soft: #FBEAE0;
+
+  /* Ação e "siga em frente" (salada, folha) */
+  --oliva: #2F5233;
+  --oliva-hover: #24401F;
+  --oliva-soft: #E9F0E3;
+
+  /* Detalhe (flor da chita) */
+  --ouro: #C99A3E;
+
+  /* Texto */
+  --ink: #241A12;
+  --ink-muted: #5A4B3D;
+  --ink-soft: #8A7A68;
+
+  /* Tipografia */
+  --font-title: 'Fraunces', Georgia, serif;
+  --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-hand: 'Caveat', cursive;
+
+  /* mantidas por compatibilidade com HTML existente */
+  --bg-primary: var(--cream);
+  --bg-secondary: var(--cream-deep);
+  --bg-accent-green: var(--oliva-soft);
+  --bg-accent-terracota: var(--terracota-soft);
+  --text-primary: var(--ink);
+  --text-muted: var(--ink-muted);
+  --text-white: var(--white);
+  --color-green: var(--oliva);
+  --color-green-hover: var(--oliva-hover);
+  --color-terracota: var(--terracota);
+  --color-border: var(--paper-line);
+}
+
+/* Reset básico e configurações de acessibilidade */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(35, 66, 92, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--ouro);
+  color: var(--ink);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--azulejo);
+  outline-offset: 3px;
+}
+
+.container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ==========================================================================
+   TIPOGRAFIA & TÍTULOS
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1.22;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.35rem;
+  text-align: center;
+  margin-top: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.85rem;
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+h3 {
+  font-size: 1.45rem;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.text-center { text-align: center; }
+.text-terracota { color: var(--terracota); }
+.text-green { color: var(--oliva); }
+
+/* Etiqueta / eyebrow acima dos títulos */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--azulejo);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.1rem;
+  border-radius: 100px;
+  margin: 0 auto 1rem;
+}
+
+.kicker-row {
+  display: flex;
+  justify-content: center;
+}
+
+/* Topo / Aviso */
+.top-bar {
+  background-color: var(--terracota);
+  color: var(--white);
+  text-align: center;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+}
+
+/* ==========================================================================
+   SEÇÕES & LAYOUT
+   ========================================================================== */
+section {
+  padding: 2.75rem 0;
+}
+
+.bg-light-green { background-color: var(--oliva-soft); }
+.bg-light-terracota { background-color: var(--terracota-soft); }
+.bg-cream-dark { background-color: var(--cream-deep); }
+
+/* ==========================================================================
+   DIVISOR FLORAL (motivo assinatura — inspirado na chita da Dona Sebastiana)
+   ========================================================================== */
+.floral-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.5rem 0 2.25rem;
+  color: var(--ouro);
+}
+
+.floral-divider::before,
+.floral-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--paper-line));
+}
+
+.floral-divider::after {
+  background: linear-gradient(90deg, var(--paper-line), transparent);
+}
+
+.floral-divider svg {
+  width: 30px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.floral-watermark {
+  position: absolute;
+  color: var(--azulejo);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================================================
+   FOTOS — o elenco de fotos reais substitui os placeholders
+   ========================================================================== */
+.photo-frame {
+  position: relative;
+  margin: 1.75rem 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 14px 32px -12px rgba(36, 26, 18, 0.28);
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+.photo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.photo-hero {
+  border-radius: 20px;
+  border: 6px solid var(--white);
+  box-shadow: 0 18px 40px -14px rgba(36, 26, 18, 0.32), 0 0 0 1px var(--paper-line);
+}
+
+.photo-caption {
+  text-align: center;
+  font-family: var(--font-hand);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--terracota);
+  margin-top: -0.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.photo-square {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   ELEMENTOS DE CONTEÚDO (Bullets, Cards, Quotes)
+   ========================================================================== */
+.bullet-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.bullet-icon {
+  font-size: 1.75rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.bullet-content { flex-grow: 1; }
+
+/* ==========================================================================
+   O CADERNO DA DONA SEBASTIANA (protocolo de 3 dias — elemento assinatura)
+   ========================================================================== */
+.notebook-intro {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+}
+
+.protocol-box {
+  position: relative;
+  background-color: var(--cream);
+  background-image: repeating-linear-gradient(
+    var(--cream) 0px, var(--cream) 34px, var(--paper-line) 35px
+  );
+  border: 1px solid var(--paper-line);
+  border-radius: 4px 18px 18px 4px;
+  padding: 2rem 1.5rem 1.5rem;
+  margin: 2.25rem 0;
+  box-shadow: 0 10px 24px -12px rgba(35, 66, 92, 0.22);
+}
+
+.protocol-box:nth-of-type(odd) { transform: rotate(-0.6deg); }
+.protocol-box:nth-of-type(even) { transform: rotate(0.5deg); }
+
+.protocol-box::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  width: 76px;
+  height: 24px;
+  background-color: var(--ouro);
+  opacity: 0.9;
+  transform: rotate(-4deg);
+  border-radius: 2px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.18);
+}
+
+.protocol-day {
+  display: block;
+  font-family: var(--font-hand);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--azulejo);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.recipe-subbox {
+  background-color: rgba(255, 255, 255, 0.65);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.disclaimer-box {
+  background-color: var(--terracota-soft);
+  border: 1px dashed var(--terracota);
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 1.5rem 0;
+}
+
+/* Bloco de Depoimentos */
+.testimonial-card {
+  position: relative;
+  background-color: var(--white);
+  border: 1px solid var(--color-border);
+  border-radius: 4px 16px 16px 16px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 6px 18px -8px rgba(36, 26, 18, 0.14);
+}
+
+.testimonial-card::before {
+  content: '\201C';
+  position: absolute;
+  top: -0.6rem;
+  left: 1rem;
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  color: var(--azulejo-soft);
+  line-height: 1;
+}
+
+.testimonial-stars {
+  color: var(--ouro);
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.testimonial-quote {
+  font-style: italic;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.testimonial-author {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+
+/* Accordions de Perguntas Frequentes / Objeções */
+.faq-container { margin: 1rem 0 2rem; }
+
+.faq-item {
+  background-color: var(--white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.faq-item.active {
+  box-shadow: 0 8px 20px -10px rgba(35, 66, 92, 0.25);
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.faq-question:hover { background-color: var(--cream-deep); }
+
+.faq-question::after {
+  content: '+';
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--oliva);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.faq-item.active .faq-question::after { transform: rotate(135deg); }
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  padding: 0 1.5rem;
+  background-color: var(--cream);
+}
+
+.faq-item.active .faq-answer {
+  max-height: 500px;
+  padding: 0.25rem 1.5rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   BOTÕES DE CTA & ELEMENTOS DE COMPRA
+   ========================================================================== */
+.cta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2.25rem 0;
+}
+
+.cta-button {
+  display: inline-block;
+  width: 100%;
+  max-width: 540px;
+  background-color: var(--oliva);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  padding: 1.25rem 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px -6px rgba(47, 82, 51, 0.45);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: var(--oliva-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -6px rgba(47, 82, 51, 0.5);
+}
+
+.cta-subtitle {
+  font-size: 1.02rem;
+  color: var(--text-muted);
+  margin-top: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+/* Order Bump Box */
+.order-bump-box {
+  background-color: var(--terracota-soft);
+  border: 2px solid var(--terracota);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.order-bump-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--terracota);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0.25rem 1rem;
+  border-bottom-left-radius: 12px;
+  text-transform: uppercase;
+}
+
+.order-bump-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.order-bump-checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  padding-top: 0.25rem;
+}
+
+.order-bump-checkbox {
+  width: 28px;
+  height: 28px;
+  accent-color: var(--terracota);
+  cursor: pointer;
+}
+
+.order-bump-title {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--terracota);
+  line-height: 1.3;
+}
+
+.order-bump-desc {
+  font-size: 1.08rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 0px;
+}
+
+/* Caixa de Garantia */
+.guarantee-box {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  background-color: var(--white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.guarantee-badge { font-size: 3.25rem; flex-shrink: 0; }
+
+.guarantee-text h4 {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.guarantee-text p {
+  font-size: 1.08rem;
+  margin-bottom: 0;
+  color: var(--text-muted);
+}
+
+/* Caixa de Preços */
+.price-box {
+  text-align: center;
+  margin: 1.5rem 0;
+  background-color: var(--cream-deep);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.price-original {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+}
+
+.price-installments {
+  font-size: 2.6rem;
+  font-family: var(--font-title);
+  font-weight: 900;
+  color: var(--oliva);
+  line-height: 1.1;
+  margin: 0.5rem 0;
+}
+
+.price-cash {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Segurança */
+.security-logos {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  opacity: 0.85;
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.security-icon { color: var(--oliva); font-size: 1.2rem; }
+
+/* Rodapé */
+footer {
+  background-color: var(--ink);
+  color: #A69588;
+  text-align: center;
+  padding: 3rem 0;
+  font-size: 0.95rem;
+}
+
+footer p { margin-bottom: 1rem; }
+footer a { color: #A69588; text-decoration: underline; }
+footer a:hover { color: var(--white); }
+
+/* ==========================================================================
+   REVELAÇÃO SUAVE AO ROLAR (respeita prefers-reduced-motion)
+   ========================================================================== */
+/* Por padrão (sem JS, ou antes do JS iniciar) o conteúdo fica sempre visível.
+   Só quando o JS confirma que o observador está pronto (.reveal-armed no body)
+   é que os blocos escondem para depois aparecer suavemente ao rolar. */
+body.reveal-armed .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+body.reveal-armed .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.reveal-armed .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+  body { font-size: 1.2rem; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.55rem; }
+  .price-installments { font-size: 2.2rem; }
+  .cta-button { font-size: 1.2rem; padding: 1.1rem 1.25rem; }
+  .guarantee-box { flex-direction: column; text-align: center; gap: 0.75rem; }
+  .protocol-box { padding: 1.75rem 1.15rem 1.25rem; }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carregando…</title>
+<style>
+  body{background:#FBF6EC; font-family:sans-serif; display:flex; align-items:center; justify-content:center;
+       min-height:100vh; color:#5A4B3D; margin:0;}
+</style>
+</head>
+<body>
+  <p id="loading-msg">Carregando a página…</p>
+
+  <script src="/gerador-config.js"></script>
+  <script src="/gerador.js"></script>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    function render404() {
+      document.open();
+      document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Página não encontrada</title></head>
+        <body style="font-family:sans-serif; background:#FBF6EC; color:#241A12; text-align:center; padding:4rem 1.5rem;">
+        <h1>Essa página não existe (mais).</h1>
+        <p><a href="/" style="color:#23425C;">Voltar para o início</a></p>
+        </body></html>`);
+      document.close();
+    }
+
+    function slugFromUrl() {
+      const path = location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+      if (path) return path;
+      return new URLSearchParams(location.search).get('slug') || '';
+    }
+
+    async function main() {
+      const cfg = window.GERADOR_CONFIG;
+      if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes('SEU-PROJETO')) {
+        document.getElementById('loading-msg').textContent =
+          'O gerador ainda não foi configurado (preencha gerador-config.js com os dados do Supabase).';
+        return;
+      }
+
+      const slug = slugFromUrl();
+      if (!slug) { render404(); return; }
+
+      const supabase = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+      const { data, error } = await supabase
+        .from('paginas_geradas')
+        .select('config')
+        .eq('slug', slug)
+        .single();
+
+      if (error || !data) { render404(); return; }
+
+      const state = data.config;
+      if (state.modo === 'metodo') {
+        state.dias = window.GERADOR.parseMetodo(state.pasteRaw || '');
+      } else {
+        state.receita = window.GERADOR.parseReceita(state.pasteRaw || '');
+      }
+      const html = window.GERADOR.assembleFullPage(state);
+      document.open();
+      document.write(html);
+      document.close();
+    }
+
+    main().catch(() => render404());
+  </script>
+</body>
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Páginas — Método Fígado Leve</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700..800&family=Outfit:wght@400..800&family=Caveat:wght@600&display=swap');
+
+  :root{
+    --cream:#FBF6EC; --cream-deep:#F3EAD8; --paper-line:#E4D7BC;
+    --azulejo:#23425C; --azulejo-hover:#1A3247; --azulejo-soft:#E7EEF1;
+    --terracota:#BD5B2C; --terracota-soft:#FBEAE0;
+    --oliva:#2F5233; --oliva-soft:#E9F0E3; --ouro:#C99A3E;
+    --ink:#241A12; --ink-muted:#5A4B3D;
+    --font-title:'Fraunces',Georgia,serif; --font-body:'Outfit',sans-serif; --font-hand:'Caveat',cursive;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font-body);line-height:1.5;}
+  a{color:inherit;}
+
+  .topbar{
+    background:var(--azulejo); color:#fff; padding:0.9rem 1.5rem;
+    display:flex; align-items:baseline; gap:0.75rem; flex-wrap:wrap;
+    position:sticky; top:0; z-index:20;
+  }
+  .topbar h1{font-family:var(--font-title); font-size:1.15rem; margin:0; font-weight:800;}
+  .topbar span{font-size:0.85rem; opacity:0.75;}
+
+  .layout{display:grid; grid-template-columns: minmax(340px, 460px) 1fr 380px; gap:0; align-items:start;}
+  @media (max-width: 1300px){
+    .layout{grid-template-columns: minmax(340px, 460px) 1fr;}
+    .history-col{grid-column: 1 / -1; max-height:none; border-left:none; border-top:1px solid var(--paper-line);}
+  }
+  @media (max-width: 900px){
+    .layout{grid-template-columns: 1fr;}
+    .history-col{grid-column: auto;}
+  }
+
+  .panel{padding:1.5rem; max-height:calc(100vh - 56px); overflow-y:auto;}
+  @media (max-width: 900px){ .panel{max-height:none;} }
+
+  .history-col{
+    padding:1.5rem; border-left:1px solid var(--paper-line); max-height:calc(100vh - 56px); overflow-y:auto;
+    background:#fff;
+  }
+  .history-item{
+    background:#fff; border:1px solid var(--paper-line); border-radius:12px;
+    padding:1rem; margin-bottom:0.75rem; box-shadow:0 4px 10px -4px rgba(36,26,18,0.1);
+    transition:all .15s ease;
+  }
+  .history-item.selected{
+    border-color:var(--azulejo); background:rgba(35,66,92,0.06);
+  }
+  .status-badge{
+    font-size:0.65rem; padding:2px 8px; border-radius:20px;
+    font-weight:700; text-transform:uppercase; display:inline-block;
+  }
+  .history-btn{
+    background:var(--cream); border:1px solid var(--paper-line); border-radius:6px;
+    padding:4px 8px; color:var(--ink); font-size:0.72rem; cursor:pointer; font-weight:700;
+    transition:all .15s ease; text-decoration:none; display:inline-block; text-align:center;
+  }
+  .history-btn:hover{
+    background:var(--paper-line);
+  }
+  .history-btn.btn-edit{
+    background:var(--azulejo); color:#fff; border-color:var(--azulejo);
+  }
+  .history-btn.btn-edit:hover{
+    background:var(--azulejo-hover); border-color:var(--azulejo-hover);
+  }
+  .history-btn.btn-deactivate{
+    background:var(--ouro); color:var(--ink); border-color:var(--ouro);
+  }
+  .history-btn.btn-delete{
+    background:var(--terracota-soft); color:var(--terracota); border-color:var(--terracota);
+  }
+  .history-btn.btn-delete:hover{
+    background:var(--terracota); color:#fff;
+  }
+
+
+  .step{
+    background:#fff; border:1px solid var(--paper-line); border-radius:12px;
+    padding:1.1rem 1.2rem; margin-bottom:1rem;
+  }
+  .step h2{
+    font-family:var(--font-title); font-size:1.02rem; margin:0 0 0.75rem;
+    display:flex; align-items:center; gap:0.5rem; color:var(--azulejo);
+  }
+  .step h2 .n{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:50%; background:var(--azulejo);
+    color:#fff; font-size:0.75rem; font-family:var(--font-body); font-weight:700; flex-shrink:0;
+  }
+
+  .field{margin-bottom:0.85rem;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block; font-size:0.8rem; font-weight:600; color:var(--ink-muted); margin-bottom:0.3rem;}
+  .field input[type=text], .field textarea, .field select{
+    width:100%; font-family:var(--font-body); font-size:0.92rem; color:var(--ink);
+    border:1px solid var(--paper-line); border-radius:8px; padding:0.55rem 0.65rem;
+    background:var(--cream); resize:vertical;
+  }
+  .field input[type=text]:focus, .field textarea:focus, .field select:focus{
+    outline:2px solid var(--azulejo); outline-offset:1px; background:#fff;
+  }
+  .field textarea{min-height:4.5rem;}
+  .hint{font-size:0.78rem; color:var(--ink-muted); margin-top:0.3rem;}
+
+  .pillrow{display:flex; gap:0.5rem; flex-wrap:wrap;}
+  .pill{
+    flex:1; min-width:110px; text-align:center; cursor:pointer;
+    border:1.5px solid var(--paper-line); border-radius:100px; padding:0.5rem 0.75rem;
+    font-size:0.85rem; font-weight:700; color:var(--ink-muted); background:var(--cream);
+    transition:all .15s ease;
+  }
+  .pill input{display:none;}
+  .pill.active{border-color:var(--azulejo); background:var(--azulejo); color:#fff;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;}
+  @media (max-width:480px){ .two-col{grid-template-columns:1fr;} }
+
+  .paste-box{
+    width:100%; min-height:13rem; font-family:'Courier New',monospace; font-size:0.85rem;
+    border:1px solid var(--paper-line); border-radius:8px; padding:0.75rem; background:var(--cream);
+    line-height:1.5;
+  }
+  details{background:var(--azulejo-soft); border-radius:8px; padding:0.6rem 0.85rem; margin-top:0.5rem; font-size:0.82rem;}
+  details summary{cursor:pointer; font-weight:700; color:var(--azulejo);}
+  details pre{white-space:pre-wrap; margin:0.5rem 0 0; font-family:'Courier New',monospace; font-size:0.78rem; color:var(--ink-muted);}
+  .example-btn{
+    margin-top:0.5rem; font-size:0.8rem; font-weight:700; color:var(--azulejo);
+    background:none; border:1px solid var(--azulejo); border-radius:8px; padding:0.35rem 0.7rem; cursor:pointer;
+  }
+  .example-btn:hover{background:var(--azulejo); color:#fff;}
+
+  .download-btn{
+    width:100%; background:var(--oliva); color:#fff; font-family:var(--font-body);
+    font-weight:800; font-size:1.02rem; border:none; border-radius:12px; padding:0.9rem 1rem;
+    cursor:pointer; box-shadow:0 8px 18px -6px rgba(47,82,51,0.45);
+  }
+  .download-btn:hover{background:#24401f;}
+  .filename-preview{
+    font-family:'Courier New',monospace; font-size:0.82rem; color:var(--ink-muted);
+    text-align:center; margin-top:0.5rem;
+  }
+
+  .preview-col{
+    background:var(--cream-deep); min-height:calc(100vh - 56px);
+    display:flex; flex-direction:column; align-items:center; padding:2rem 1.25rem;
+    position:sticky; top:56px; align-self:start;
+  }
+  @media (max-width:900px){ .preview-col{position:static; min-height:60vh;} }
+  .preview-label{font-family:var(--font-hand); font-size:1.3rem; color:var(--terracota); margin-bottom:0.75rem;}
+  .phone{
+    width:100%; max-width:390px; background:#111; border-radius:32px; padding:10px;
+    box-shadow:0 20px 45px -18px rgba(36,26,18,0.4);
+  }
+  .phone iframe{
+    width:100%; height:74vh; min-height:520px; border:none; border-radius:24px; background:#fff; display:block;
+  }
+</style>
+</head>
+<body>
+
+  <!-- TELA DE LOGIN OVERLAY -->
+  <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--cream); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+    <div style="background: #fff; border: 1px solid var(--paper-line); border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 20px 45px -15px rgba(36,26,18,0.25); text-align: center;">
+      <h2 style="font-family: var(--font-title); color: var(--azulejo); font-size: 1.8rem; margin: 0 0 0.5rem; font-weight: 800;">Acesso Restrito</h2>
+      <p style="font-size: 0.95rem; color: var(--ink-muted); margin-bottom: 2rem;">Entre com as credenciais do painel para gerenciar as páginas.</p>
+      
+      <form id="login-form">
+        <div class="field" style="text-align: left; margin-bottom: 1.2rem;">
+          <label for="login-user" style="display:block; font-size:0.8rem; font-weight:600; color:var(--ink-muted); margin-bottom:0.3rem;">Usuário</label>
+          <input type="text" id="login-user" required style="width:100%; font-family:var(--font-body); font-size:0.95rem; border:1px solid var(--paper-line); border-radius:8px; padding:0.6rem 0.75rem; background:var(--cream);">
+        </div>
+        <div class="field" style="text-align: left; margin-bottom: 2rem;">
+          <label for="login-pass" style="display:block; font-size:0.8rem; font-weight:600; color:var(--ink-muted); margin-bottom:0.3rem;">Senha</label>
+          <input type="password" id="login-pass" required style="width:100%; font-family:var(--font-body); font-size:0.95rem; border:1px solid var(--paper-line); border-radius:8px; padding:0.6rem 0.75rem; background:var(--cream);">
+        </div>
+        
+        <button type="submit" class="download-btn" style="background: var(--azulejo); box-shadow: 0 8px 18px -6px rgba(35,66,92,0.45);">Entrar no Painel</button>
+        <p id="login-error" style="color: var(--terracota); font-size: 0.85rem; font-weight: bold; margin-top: 1rem; display: none;">Usuário ou senha incorretos!</p>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="topbar">
+    <h1>🛠️ Gerador de Páginas Extras</h1>
+    <span>Método Fígado Leve — edite tudo aqui, sem deploy. Quando terminar, baixe o .html e solte na pasta <code>build/</code>.</span>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+
+      <div class="step">
+        <h2><span class="n">1</span> Qual página é a base?</h2>
+        <div class="field">
+          <div class="pillrow" id="pick-angle">
+            <label class="pill active"><input type="radio" name="angle" value="figado" checked>Fígado</label>
+            <label class="pill"><input type="radio" name="angle" value="glicose">Glicose</label>
+            <label class="pill"><input type="radio" name="angle" value="insulina">Insulina/Pele</label>
+          </div>
+          <p class="hint">O resto da página (mecanismo, provas, objeções, oferta e checkout) é herdado inteiro dessa base. Só o topo muda.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">2</span> O que vai no topo?</h2>
+        <div class="field">
+          <div class="pillrow" id="pick-modo">
+            <label class="pill active"><input type="radio" name="modo" value="metodo" checked>Método (Protocolo)</label>
+            <label class="pill"><input type="radio" name="modo" value="receita">Receita</label>
+          </div>
+          <p class="hint"><strong>Método</strong> = cards "Dia 1, Dia 2, Dia 3...". <strong>Receita</strong> = 1 card só, com ingredientes + modo de preparo.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">3</span> Cabeçalho (Hero)</h2>
+        <div class="field">
+          <label for="f-kicker">Etiqueta acima do título</label>
+          <input type="text" id="f-kicker">
+        </div>
+        <div class="field">
+          <label for="f-h1">Título principal (H1)</label>
+          <textarea id="f-h1"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-h3">Subtítulo (H3)</label>
+          <textarea id="f-h3"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-hero-img">Foto do hero</label>
+          <select id="f-hero-img"></select>
+        </div>
+        <div class="field">
+          <label for="f-hero-alt">Texto alternativo da foto</label>
+          <input type="text" id="f-hero-alt">
+        </div>
+        <div class="field">
+          <label for="f-hero-caption">Legenda (opcional, aparece embaixo da foto)</label>
+          <input type="text" id="f-hero-caption">
+        </div>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">4</span> Bloco do topo</h2>
+        <div class="field">
+          <label for="f-heading">Título do bloco (H2)</label>
+          <input type="text" id="f-heading">
+        </div>
+        <div class="field">
+          <label for="f-intro">Texto de introdução</label>
+          <textarea id="f-intro"></textarea>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="f-isca-img">Foto da isca</label>
+            <select id="f-isca-img"></select>
+          </div>
+          <div class="field">
+            <label for="f-isca-nome">Nome da isca (ex: chá, elixir, shot)</label>
+            <input type="text" id="f-isca-nome">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-isca-alt">Texto alternativo da foto da isca</label>
+          <input type="text" id="f-isca-alt">
+        </div>
+        <div class="field">
+          <label for="f-isca-caption">Legenda da foto da isca (opcional)</label>
+          <input type="text" id="f-isca-caption">
+        </div>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">5</span> Cole o texto (o parser monta os cards)</h2>
+        <div class="field">
+          <textarea class="paste-box" id="f-paste"></textarea>
+          <button type="button" class="example-btn" id="btn-exemplo">↺ Carregar exemplo deste modo</button>
+          <details id="formato-metodo">
+            <summary>Ver formato esperado — Método</summary>
+            <pre>DIA 1 — Título do dia
+Frase de contexto (opcional).
+COMO FAZER: o passo a passo aqui.
+NOTA: por que funciona (opcional).
+
+DIA 2 — Título do dia
+...</pre>
+          </details>
+          <details id="formato-receita" style="display:none;">
+            <summary>Ver formato esperado — Receita</summary>
+            <pre>TÍTULO: nome da receita
+
+INGREDIENTES:
+- item 1
+- item 2
+
+MODO DE PREPARO:
+1. passo 1
+2. passo 2</pre>
+          </details>
+        </div>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">6</span> Metadados da página</h2>
+        <div class="field">
+          <label for="f-title">Título da aba (SEO)</label>
+          <input type="text" id="f-title">
+        </div>
+        <div class="field">
+          <label for="f-description">Descrição (SEO)</label>
+          <input type="text" id="f-description">
+        </div>
+        <div class="field">
+          <label for="f-cta">Texto do botão de compra</label>
+          <input type="text" id="f-cta">
+        </div>
+        <div class="field">
+          <label for="f-slug">Nome do arquivo ao baixar</label>
+          <input type="text" id="f-slug">
+        </div>
+        <div class="field">
+          <label for="f-expire">Tempo de Expiração do Link</label>
+          <select id="f-expire" style="width:100%; font-family:var(--font-body); font-size:0.92rem; color:var(--ink); border:1px solid var(--paper-line); border-radius:8px; padding:0.55rem 0.65rem; background:var(--cream);">
+            <option value="never">Nunca expira (Recomendado para campanhas)</option>
+            <option value="24h">24 Horas (Igual ao lp-oceandigi)</option>
+            <option value="7d">7 Dias</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="step">
+        <button type="button" class="download-btn" id="btn-download" style="margin-bottom: 0.75rem;">⬇️ Baixar página pronta (.html)</button>
+        <button type="button" class="download-btn" id="btn-publish" style="background: var(--azulejo); box-shadow: 0 8px 18px -6px rgba(35,66,92,0.45);">🚀 Publicar Link ao Vivo</button>
+        <div class="filename-preview" id="filename-preview"></div>
+        
+        <!-- Alerta de status da publicação -->
+        <div id="publish-status" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px; font-size: 0.9rem; border: 1px solid var(--paper-line); background: var(--cream-deep);">
+          <p id="publish-status-text" style="margin: 0; font-weight: 700; color: var(--ink);"></p>
+          <div id="publish-link-container" style="display: none; margin-top: 0.5rem; gap: 0.5rem; align-items: center;">
+            <input type="text" id="publish-url-input" readonly style="flex: 1; padding: 0.4rem; font-size: 0.8rem; border: 1px solid var(--paper-line); border-radius: 4px; background: #fff;" onclick="this.select()">
+            <button type="button" id="btn-copy-url" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: var(--oliva); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 700;">Copiar</button>
+          </div>
+        </div>
+        
+        <p class="hint" style="text-align:center; margin-top:0.6rem;">Salve o arquivo baixado dentro da mesma pasta <code>build/</code> (junto de <code>styles.css</code>, <code>script.js</code> e <code>images/</code>) e suba para a Vercel, ou use o botão <strong>Publicar Link ao Vivo</strong> para disponibilizar online imediatamente.</p>
+      </div>
+
+    </div>
+
+    <div class="preview-col">
+      <div class="preview-label">✎ Prévia ao vivo</div>
+      <div class="phone">
+        <iframe id="preview-frame" title="Prévia da página gerada"></iframe>
+      </div>
+    </div>
+
+    <div class="history-col">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+        <h2 style="font-family: var(--font-title); font-size: 1.15rem; font-weight: 800; color: var(--azulejo); margin: 0; display: flex; align-items: center; gap: 8px;">
+          🔗 Links Ativos
+          <span id="history-badge" style="background: var(--azulejo-soft); border-radius: 20px; padding: 2px 10px; font-size: 0.75rem; color: var(--azulejo); font-family: var(--font-body); font-weight: 700;">0</span>
+        </h2>
+        <button type="button" id="btn-delete-all" style="background: var(--terracota-soft); color: var(--terracota); border: 1px solid var(--terracota); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; cursor: pointer;">
+          🗑 Excluir Todas
+        </button>
+      </div>
+
+      <div id="history-container">
+        <!-- Barra de ações bulk -->
+        <div id="bulk-actions-bar" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--paper-line); flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 6px; color: var(--ink-muted); font-size: 0.78rem; font-weight: 700; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="chk-select-all" style="width: 15px; height: 15px; accent-color: var(--azulejo); cursor: pointer;">
+            <span id="bulk-select-label">Selecionar tudo</span>
+          </label>
+          
+          <div id="bulk-btns" style="display: none; gap: 6px;">
+            <button type="button" id="btn-bulk-deactivate" style="background: var(--ouro); border: none; border-radius: 6px; padding: 4px 8px; color: var(--ink); font-size: 0.7rem; font-weight: 700; cursor: pointer;">
+              Desativar
+            </button>
+            <button type="button" id="btn-bulk-delete" style="background: var(--terracota-soft); border: none; border-radius: 6px; padding: 4px 8px; color: var(--terracota); font-size: 0.7rem; font-weight: 700; cursor: pointer;">
+              Excluir
+            </button>
+          </div>
+        </div>
+
+        <p style="font-size:0.85rem; color:var(--ink-muted); margin:0;" id="history-loading">Carregando links do Supabase...</p>
+        <div id="history-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Cards dos links -->
+        </div>
+      </div>
+
+      <button type="button" class="example-btn" id="btn-refresh-history" style="width: 100%; margin-top: 1rem;">🔄 Atualizar Painel</button>
+    </div>
+  </div>
+
+
+  <script src="gerador-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="gerador.js"></script>
+  <script>
+    const G = window.GERADOR;
+    const els = {
+      angle: () => document.querySelector('input[name=angle]:checked').value,
+      modo: () => document.querySelector('input[name=modo]:checked').value,
+      kicker: document.getElementById('f-kicker'),
+      h1: document.getElementById('f-h1'),
+      h3: document.getElementById('f-h3'),
+      heroImg: document.getElementById('f-hero-img'),
+      heroAlt: document.getElementById('f-hero-alt'),
+      heroCaption: document.getElementById('f-hero-caption'),
+      heading: document.getElementById('f-heading'),
+      intro: document.getElementById('f-intro'),
+      iscaImg: document.getElementById('f-isca-img'),
+      iscaNome: document.getElementById('f-isca-nome'),
+      iscaAlt: document.getElementById('f-isca-alt'),
+      iscaCaption: document.getElementById('f-isca-caption'),
+      paste: document.getElementById('f-paste'),
+      title: document.getElementById('f-title'),
+      description: document.getElementById('f-description'),
+      cta: document.getElementById('f-cta'),
+      slug: document.getElementById('f-slug'),
+    };
+
+    // Popula os <select> de imagens
+    function fillImageSelect(select) {
+      select.innerHTML = G.IMAGES.map(img => `<option value="${img.file}">${img.label}</option>`).join('');
+    }
+    fillImageSelect(els.heroImg);
+    fillImageSelect(els.iscaImg);
+
+    let pasteTouched = false;
+    els.paste.addEventListener('input', () => { pasteTouched = true; scheduleUpdate(); });
+
+    function defaultHeadingIntro(modo) {
+      if (modo === 'metodo') {
+        return {
+          heading: '📋 O Caderno da Dona Sebastiana',
+          intro: 'Minha filha, separei um passo a passo simples pra você sentir a diferença já nos próximos dias:',
+        };
+      }
+      return {
+        heading: '🍵 A Receita da Dona Sebastiana',
+        intro: 'Minha filha, aqui está a receita certinha, do jeito que se faz na roça:',
+      };
+    }
+
+    function applyAngleDefaults(angleKey) {
+      const a = G.ANGLES[angleKey];
+      els.kicker.value = a.kicker;
+      els.h1.value = a.h1;
+      els.h3.value = a.h3;
+      els.heroImg.value = a.heroImg;
+      els.heroAlt.value = a.heroAlt;
+      els.heroCaption.value = a.heroCaption;
+      els.iscaImg.value = a.iscaImg;
+      els.iscaNome.value = a.iscaNome;
+      els.iscaAlt.value = '';
+      els.iscaCaption.value = '';
+      els.title.value = a.title;
+      els.description.value = a.description;
+      els.cta.value = a.ctaTexto;
+      const di = defaultHeadingIntro(els.modo());
+      els.heading.value = di.heading;
+      els.intro.value = di.intro;
+      updateSlug();
+    }
+
+    function updateSlug() {
+      const base = `${els.modo() === 'metodo' ? 'protocolo' : 'receita'}-${els.angle()}`;
+      els.slug.value = G.slugify(base);
+    }
+
+    function toggleModoUI() {
+      const modo = els.modo();
+      document.getElementById('formato-metodo').style.display = modo === 'metodo' ? '' : 'none';
+      document.getElementById('formato-receita').style.display = modo === 'receita' ? '' : 'none';
+      if (!pasteTouched) {
+        els.paste.value = modo === 'metodo' ? G.EXEMPLO_METODO : G.EXEMPLO_RECEITA;
+      }
+      const di = defaultHeadingIntro(modo);
+      if (!els.heading.dataset.touched) els.heading.value = di.heading;
+      if (!els.intro.dataset.touched) els.intro.value = di.intro;
+      updateSlug();
+    }
+
+    document.querySelectorAll('input[name=angle]').forEach(r => r.addEventListener('change', () => {
+      document.querySelectorAll('#pick-angle .pill').forEach(p => p.classList.toggle('active', p.querySelector('input').checked));
+      applyAngleDefaults(els.angle());
+      scheduleUpdate();
+    }));
+    document.querySelectorAll('input[name=modo]').forEach(r => r.addEventListener('change', () => {
+      document.querySelectorAll('#pick-modo .pill').forEach(p => p.classList.toggle('active', p.querySelector('input').checked));
+      toggleModoUI();
+      scheduleUpdate();
+    }));
+    els.heading.addEventListener('input', () => { els.heading.dataset.touched = '1'; });
+    els.intro.addEventListener('input', () => { els.intro.dataset.touched = '1'; });
+
+    document.getElementById('btn-exemplo').addEventListener('click', () => {
+      pasteTouched = false;
+      els.paste.value = els.modo() === 'metodo' ? G.EXEMPLO_METODO : G.EXEMPLO_RECEITA;
+      scheduleUpdate();
+    });
+
+    function buildState() {
+      const modo = els.modo();
+      const state = {
+        baseAngle: els.angle(),
+        modo,
+        kicker: els.kicker.value,
+        h1: els.h1.value,
+        h3: els.h3.value,
+        heroImg: els.heroImg.value,
+        heroAlt: els.heroAlt.value,
+        heroCaption: els.heroCaption.value,
+        heading: els.heading.value,
+        intro: els.intro.value,
+        iscaImg: els.iscaImg.value,
+        iscaAlt: els.iscaAlt.value,
+        iscaCaption: els.iscaCaption.value,
+        iscaNome: els.iscaNome.value,
+        pageTitle: els.title.value,
+        pageDescription: els.description.value,
+        ctaTexto: els.cta.value,
+        pasteRaw: els.paste.value,
+      };
+      if (modo === 'metodo') {
+        state.dias = G.parseMetodo(els.paste.value);
+      } else {
+        state.receita = G.parseReceita(els.paste.value);
+      }
+      return state;
+    }
+
+    let updateTimer = null;
+    function scheduleUpdate() {
+      clearTimeout(updateTimer);
+      updateTimer = setTimeout(renderPreview, 200);
+    }
+
+    function renderPreview() {
+      const state = buildState();
+      const html = G.assembleFullPage(state);
+      document.getElementById('preview-frame').srcdoc = html;
+      document.getElementById('filename-preview').textContent = `${G.slugify(els.slug.value)}.html`;
+    }
+
+    els.slug.addEventListener('input', () => {
+      document.getElementById('filename-preview').textContent = `${G.slugify(els.slug.value)}.html`;
+    });
+
+    document.getElementById('btn-download').addEventListener('click', () => {
+      const state = buildState();
+      const html = G.assembleFullPage(state);
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${G.slugify(els.slug.value)}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Wire genérico: qualquer input/select dispara nova prévia
+    Object.values(els).forEach(el => {
+      if (el instanceof HTMLElement) {
+        el.addEventListener('input', scheduleUpdate);
+        el.addEventListener('change', scheduleUpdate);
+      }
+    });
+
+    // ==========================================================================
+    // SUPABASE & LOGIN INTEGRATION & LINK MANAGER
+    // ==========================================================================
+    let supabaseClient = null;
+    const selectedIds = new Set();
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // Lógica de Login
+    const loginOverlay = document.getElementById('login-overlay');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    
+    function checkLogin() {
+      const isAuth = sessionStorage.getItem('gerador_autenticado') === 'true';
+      if (isAuth) {
+        loginOverlay.style.display = 'none';
+        initSupabase();
+      } else {
+        loginOverlay.style.display = 'flex';
+      }
+    }
+    
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value;
+      const pass = document.getElementById('login-pass').value;
+      const cfg = window.GERADOR_CONFIG;
+      
+      if (cfg && user === cfg.ADMIN_USER && pass === cfg.ADMIN_PASS) {
+        sessionStorage.setItem('gerador_autenticado', 'true');
+        loginError.style.display = 'none';
+        loginOverlay.style.display = 'none';
+        initSupabase();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    function initSupabase() {
+      const cfg = window.GERADOR_CONFIG;
+      if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes('SEU-PROJETO')) {
+        console.error('Supabase não configurado em gerador-config.js');
+        return;
+      }
+      if (window.supabase) {
+        supabaseClient = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+        loadHistory();
+      } else {
+        console.error('Supabase SDK não foi carregado pelo CDN');
+      }
+    }
+
+    // Cronômetro decrescente para os links ativos
+    function updateCountdowns() {
+      const elements = document.querySelectorAll('.countdown-timer');
+      elements.forEach(el => {
+        const expiresAt = el.getAttribute('data-expires');
+        if (!expiresAt) return;
+        const diff = new Date(expiresAt) - new Date();
+        if (diff <= 0) {
+          el.textContent = 'Expirado';
+          const card = el.closest('.history-item');
+          if (card) {
+            const badge = card.querySelector('.status-badge');
+            if (badge && badge.textContent.trim() === 'Ativa') {
+              badge.textContent = 'Expirada';
+              badge.style.background = 'var(--terracota-soft)';
+              badge.style.color = 'var(--terracota)';
+            }
+          }
+        } else {
+          const h = Math.floor(diff / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          el.textContent = `Expira em ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+      });
+    }
+    setInterval(updateCountdowns, 1000);
+
+    // Gerenciador Bulk (Lote)
+    function updateBulkUI() {
+      const bulkBtns = document.getElementById('bulk-btns');
+      const bulkLabel = document.getElementById('bulk-select-label');
+      const chkAll = document.getElementById('chk-select-all');
+      
+      const totalItems = document.querySelectorAll('.history-item-chk').length;
+      
+      if (selectedIds.size > 0) {
+        bulkBtns.style.display = 'flex';
+        bulkLabel.textContent = `${selectedIds.size} selecionado(s)`;
+        chkAll.checked = selectedIds.size === totalItems;
+      } else {
+        bulkBtns.style.display = 'none';
+        bulkLabel.textContent = 'Selecionar tudo';
+        chkAll.checked = false;
+      }
+    }
+
+    document.getElementById('chk-select-all').addEventListener('change', (e) => {
+      const chk = e.target;
+      const chks = document.querySelectorAll('.history-item-chk');
+      selectedIds.clear();
+      
+      chks.forEach(c => {
+        c.checked = chk.checked;
+        if (chk.checked) {
+          selectedIds.add(c.value);
+        }
+        const card = c.closest('.history-item');
+        if (card) {
+          card.classList.toggle('selected', chk.checked);
+        }
+      });
+      updateBulkUI();
+    });
+
+    // Desativar Selecionados (Lote)
+    document.getElementById('btn-bulk-deactivate').addEventListener('click', async () => {
+      if (!selectedIds.size || !supabaseClient) return;
+      if (!confirm(`Deseja desativar ${selectedIds.size} link(s) selecionado(s)?`)) return;
+      
+      try {
+        const { error } = await supabaseClient
+          .from('paginas_geradas')
+          .update({ expires_at: new Date().toISOString() })
+          .in('id', [...selectedIds]);
+          
+        if (error) throw error;
+        alert('Links desativados com sucesso!');
+        selectedIds.clear();
+        loadHistory();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao desativar links em lote: ' + (err.message || err));
+      }
+    });
+
+    // Excluir Selecionados (Lote)
+    document.getElementById('btn-bulk-delete').addEventListener('click', async () => {
+      if (!selectedIds.size || !supabaseClient) return;
+      if (!confirm(`Deseja excluir permanentemente ${selectedIds.size} link(s) selecionado(s)?`)) return;
+      
+      try {
+        const { error } = await supabaseClient
+          .from('paginas_geradas')
+          .delete()
+          .in('id', [...selectedIds]);
+          
+        if (error) throw error;
+        alert('Links excluídos com sucesso!');
+        selectedIds.clear();
+        loadHistory();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao excluir links em lote: ' + (err.message || err));
+      }
+    });
+
+    // Excluir Todas
+    document.getElementById('btn-delete-all').addEventListener('click', async () => {
+      if (!supabaseClient) return;
+      if (!confirm('Deseja excluir permanentemente TODAS as páginas cadastradas? Esta ação é irreversível.')) return;
+      
+      try {
+        const { error } = await supabaseClient
+          .from('paginas_geradas')
+          .delete()
+          .neq('id', '00000000-0000-0000-0000-000000000000');
+          
+        if (error) throw error;
+        alert('Todas as páginas foram excluídas!');
+        selectedIds.clear();
+        loadHistory();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao excluir todas as páginas: ' + (err.message || err));
+      }
+    });
+
+    async function loadHistory() {
+      const loadingEl = document.getElementById('history-loading');
+      const listEl = document.getElementById('history-list');
+      const badgeEl = document.getElementById('history-badge');
+      
+      if (!supabaseClient) return;
+      
+      loadingEl.style.display = 'block';
+      listEl.innerHTML = '';
+      
+      try {
+        const { data, error } = await supabaseClient
+          .from('paginas_geradas')
+          .select('id, slug, config, expires_at, created_at')
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        
+        window.HISTORICO_PAGINAS = data || [];
+        badgeEl.textContent = window.HISTORICO_PAGINAS.length;
+        
+        loadingEl.style.display = 'none';
+        if (window.HISTORICO_PAGINAS.length === 0) {
+          listEl.innerHTML = '<p style="font-size:0.85rem; color:var(--ink-muted); margin:0;">Nenhum link ativo ou publicado.</p>';
+          updateBulkUI();
+          return;
+        }
+        
+        listEl.innerHTML = window.HISTORICO_PAGINAS.map(p => {
+          const config = p.config || {};
+          const slug = p.slug;
+          const created = formatDate(p.created_at);
+          const expiresAt = p.expires_at;
+          const isActive = expiresAt === null || new Date(expiresAt) > new Date();
+          
+          const modo = config.modo || 'modo';
+          const angle = config.baseAngle || 'base';
+          const h1 = config.h1 || '';
+          
+          const currentOrigin = window.location.origin;
+          const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+          const liveUrl = `${currentOrigin}${currentPath}/${slug}`;
+          
+          const isSelected = selectedIds.has(p.id);
+          
+          const statusText = isActive ? 'Ativa' : 'Expirada';
+          const statusBg = isActive ? 'var(--oliva-soft)' : 'var(--terracota-soft)';
+          const statusColor = isActive ? 'var(--oliva)' : 'var(--terracota)';
+          
+          let countdownHtml = '';
+          if (isActive && expiresAt) {
+            countdownHtml = `
+              <div class="countdown-timer" data-expires="${expiresAt}" style="font-size:0.72rem; color:var(--ink-soft); font-family:monospace; font-weight:700; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                Calculando tempo...
+              </div>
+            `;
+          }
+          
+          return `
+            <div class="history-item ${isSelected ? 'selected' : ''}" data-id="${p.id}">
+              <div style="display: flex; align-items: flex-start; gap: 10px;">
+                <input type="checkbox" value="${p.id}" class="history-item-chk" ${isSelected ? 'checked' : ''} style="width: 16px; height: 16px; margin-top: 4px; cursor: pointer; accent-color: var(--azulejo); flex-shrink: 0;" onchange="toggleItemSelect(this)">
+                <div style="flex: 1; overflow: hidden;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <strong style="color: var(--ink); font-family: 'Courier New', monospace; font-size: 0.95rem;">/${slug}</strong>
+                    <span class="status-badge" style="background: ${statusBg}; color: ${statusColor};">${statusText}</span>
+                  </div>
+                  <div style="font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="${h1}">
+                    ${modo.toUpperCase()} - ${angle.toUpperCase()} | ${h1}
+                  </div>
+                  <a href="${liveUrl}" target="_blank" style="color: var(--azulejo); font-size: 0.8rem; text-decoration: none; word-break: break-all; display: inline-block; font-weight: 600;">${liveUrl}</a>
+                  
+                  ${countdownHtml}
+                  
+                  <div style="display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap;">
+                    <button type="button" class="history-btn" onclick="copyLinkUrl('${liveUrl}', this)" style="flex: 1; min-width: 60px;">Copiar</button>
+                    <button type="button" class="history-btn btn-edit" onclick="loadPageFromHistory('${p.id}')" style="flex: 1; min-width: 60px;">Editar</button>
+                    ${isActive && expiresAt ? `<button type="button" class="history-btn btn-deactivate" onclick="deactivateLink('${p.id}')" style="flex: 1; min-width: 60px;">Desativar</button>` : ''}
+                    <button type="button" class="history-btn btn-delete" onclick="deletePageFromHistory('${p.id}', '${slug}')" style="flex: 1; min-width: 60px;">Excluir</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        updateBulkUI();
+        updateCountdowns();
+      } catch (err) {
+        console.error(err);
+        loadingEl.style.display = 'none';
+        listEl.innerHTML = `<p style="font-size:0.85rem; color:var(--terracota); margin:0;">Erro ao carregar histórico: ${err.message || err}</p>`;
+      }
+    }
+    
+    document.getElementById('btn-refresh-history').addEventListener('click', loadHistory);
+    
+    window.toggleItemSelect = function(chk) {
+      const id = chk.value;
+      const card = chk.closest('.history-item');
+      if (chk.checked) {
+        selectedIds.add(id);
+        if (card) card.classList.add('selected');
+      } else {
+        selectedIds.delete(id);
+        if (card) card.classList.remove('selected');
+      }
+      updateBulkUI();
+    };
+
+    window.copyLinkUrl = function(url, btn) {
+      navigator.clipboard.writeText(url).then(() => {
+        const origText = btn.textContent;
+        btn.textContent = 'Copiado!';
+        btn.style.background = 'var(--oliva)';
+        btn.style.color = '#fff';
+        btn.style.borderColor = 'var(--oliva)';
+        setTimeout(() => {
+          btn.textContent = origText;
+          btn.style.background = 'var(--cream)';
+          btn.style.color = 'var(--ink)';
+          btn.style.borderColor = 'var(--paper-line)';
+        }, 1500);
+      });
+    };
+
+    window.deactivateLink = async function(id) {
+      if (!confirm('Deseja expirar/desativar este link imediatamente?')) return;
+      try {
+        const { error } = await supabaseClient
+          .from('paginas_geradas')
+          .update({ expires_at: new Date().toISOString() })
+          .eq('id', id);
+        if (error) throw error;
+        loadHistory();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao desativar link: ' + (err.message || err));
+      }
+    };
+    
+    window.loadPageFromHistory = function(id) {
+      const page = window.HISTORICO_PAGINAS.find(p => p.id === id);
+      if (!page) return;
+      
+      const config = page.config;
+      
+      const angleInput = document.querySelector(`input[name=angle][value="${config.baseAngle}"]`);
+      if (angleInput) {
+        angleInput.checked = true;
+        document.querySelectorAll('#pick-angle .pill').forEach(p => p.classList.toggle('active', p.querySelector('input').checked));
+      }
+      
+      const modoInput = document.querySelector(`input[name=modo][value="${config.modo}"]`);
+      if (modoInput) {
+        modoInput.checked = true;
+        document.querySelectorAll('#pick-modo .pill').forEach(p => p.classList.toggle('active', p.querySelector('input').checked));
+      }
+      
+      els.kicker.value = config.kicker || '';
+      els.h1.value = config.h1 || '';
+      els.h3.value = config.h3 || '';
+      els.heroImg.value = config.heroImg || '';
+      els.heroAlt.value = config.heroAlt || '';
+      els.heroCaption.value = config.heroCaption || '';
+      els.heading.value = config.heading || '';
+      els.intro.value = config.intro || '';
+      els.iscaImg.value = config.iscaImg || '';
+      els.iscaNome.value = config.iscaNome || '';
+      els.iscaAlt.value = config.iscaAlt || '';
+      els.iscaCaption.value = config.iscaCaption || '';
+      els.title.value = config.pageTitle || '';
+      els.description.value = config.pageDescription || '';
+      els.cta.value = config.ctaTexto || '';
+      els.slug.value = page.slug || '';
+      els.paste.value = config.pasteRaw || '';
+      
+      // Carrega a expiração correspondente ao tempo configurado
+      const expireSelect = document.getElementById('f-expire');
+      if (expireSelect) {
+        if (!page.expires_at) {
+          expireSelect.value = 'never';
+        } else {
+          const created = new Date(page.created_at);
+          const expires = new Date(page.expires_at);
+          const hours = Math.round((expires - created) / 3600000);
+          if (hours <= 24) expireSelect.value = '24h';
+          else expireSelect.value = '7d';
+        }
+      }
+      
+      els.heading.dataset.touched = '1';
+      els.intro.dataset.touched = '1';
+      pasteTouched = true;
+      
+      document.getElementById('formato-metodo').style.display = config.modo === 'metodo' ? '' : 'none';
+      document.getElementById('formato-receita').style.display = config.modo === 'receita' ? '' : 'none';
+      
+      renderPreview();
+      
+      document.querySelector('.panel').scrollTop = 0;
+      alert(`Configuração da página /${page.slug} carregada no editor!`);
+    };
+    
+    window.deletePageFromHistory = async function(id, slug) {
+      if (!confirm(`Tem certeza que deseja excluir permanentemente a página com slug "/${slug}"?`)) {
+        return;
+      }
+      try {
+        const { error } = await supabaseClient
+          .from('paginas_geradas')
+          .delete()
+          .eq('id', id);
+        if (error) throw error;
+        alert(`Página "/${slug}" excluída com sucesso!`);
+        selectedIds.delete(id);
+        loadHistory();
+      } catch (err) {
+        console.error(err);
+        alert(`Erro ao excluir página: ${err.message || err}`);
+      }
+    };
+
+    document.getElementById('btn-publish').addEventListener('click', async () => {
+      if (!supabaseClient) {
+        alert('Supabase não inicializado. Verifique a configuração.');
+        return;
+      }
+      
+      const slugInput = els.slug.value.trim();
+      const slug = G.slugify(slugInput);
+      if (!slug) {
+        alert('Por favor, defina um slug válido.');
+        return;
+      }
+      
+      const publishStatus = document.getElementById('publish-status');
+      const publishStatusText = document.getElementById('publish-status-text');
+      const publishLinkContainer = document.getElementById('publish-link-container');
+      const publishUrlInput = document.getElementById('publish-url-input');
+      
+      publishStatus.style.display = 'block';
+      publishStatus.style.border = '1px solid var(--paper-line)';
+      publishStatus.style.background = 'var(--cream-deep)';
+      publishStatusText.textContent = 'Verificando slug no Supabase...';
+      publishLinkContainer.style.display = 'none';
+      
+      try {
+        const { data: existing, error: checkError } = await supabaseClient
+          .from('paginas_geradas')
+          .select('id, slug')
+          .eq('slug', slug)
+          .maybeSingle();
+          
+        if (checkError) throw checkError;
+        
+        let confirmOverwrite = true;
+        if (existing) {
+          confirmOverwrite = confirm(`O slug "/${slug}" já existe. Deseja sobrescrever esta página?`);
+        }
+        
+        if (!confirmOverwrite) {
+          publishStatusText.textContent = 'Publicação cancelada.';
+          return;
+        }
+        
+        publishStatusText.textContent = 'Publicando no Supabase...';
+        
+        const pageState = buildState();
+        
+        // Calcula a expiração
+        const expireVal = document.getElementById('f-expire').value;
+        let expiresAt = null;
+        if (expireVal === '24h') {
+          expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        } else if (expireVal === '7d') {
+          expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+        }
+        
+        const payload = {
+          slug: slug,
+          config: pageState,
+          expires_at: expiresAt,
+          updated_at: new Date().toISOString()
+        };
+        
+        let query;
+        if (existing) {
+          query = supabaseClient
+            .from('paginas_geradas')
+            .update(payload)
+            .eq('id', existing.id);
+        } else {
+          query = supabaseClient
+            .from('paginas_geradas')
+            .insert([payload]);
+        }
+        
+        const { error: saveError } = await query;
+        if (saveError) throw saveError;
+        
+        publishStatus.style.border = '1px solid var(--oliva)';
+        publishStatus.style.background = 'var(--oliva-soft)';
+        publishStatusText.innerHTML = `🎉 Página publicada com sucesso!`;
+        
+        const currentOrigin = window.location.origin;
+        const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        const liveUrl = `${currentOrigin}${currentPath}/${slug}`;
+        
+        publishUrlInput.value = liveUrl;
+        publishLinkContainer.style.display = 'flex';
+        
+        loadHistory();
+      } catch (err) {
+        console.error(err);
+        publishStatus.style.border = '1px solid var(--terracota)';
+        publishStatus.style.background = 'var(--terracota-soft)';
+        publishStatusText.textContent = `Erro ao publicar: ${err.message || err}`;
+      }
+    });
+
+    document.getElementById('btn-copy-url').addEventListener('click', () => {
+      const urlInput = document.getElementById('publish-url-input');
+      urlInput.select();
+      navigator.clipboard.writeText(urlInput.value).then(() => {
+        const btn = document.getElementById('btn-copy-url');
+        const origText = btn.textContent;
+        btn.textContent = 'Copiado!';
+        btn.style.background = 'var(--azulejo)';
+        setTimeout(() => {
+          btn.textContent = origText;
+          btn.style.background = 'var(--oliva)';
+        }, 1500);
+      });
+    });
+
+    // Estado inicial
+    applyAngleDefaults('figado');
+    toggleModoUI();
+    renderPreview();
+    checkLogin();
+  </script>
+</body>
+</html>
